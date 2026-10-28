@@ -2,11 +2,32 @@
 const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/userController');
+const {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  getAllUsers,
+  updatePassword,
+  updateUserRole
+} = require('../controllers/userController');
 
-router.get('/', userController.getUsers);
-router.get('/:id', userController.getUserById);
-router.post('/', userController.createUser);
-router.delete('/:id', userController.deleteUser);
+const {
+  protect,
+  adminOnly
+} = require('../middlewares/authMiddleware');
+
+// Public authentication routes
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+// Private profile route
+router.get('/profile', protect, getUserProfile);
+
+// Update password (JWT required)
+router.put('/update-password', protect, updatePassword);
+
+// Admin-only routes
+router.get('/', protect, adminOnly, getAllUsers);
+router.put('/:id/role', protect, adminOnly, updateUserRole);
 
 module.exports = router;

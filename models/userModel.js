@@ -5,37 +5,45 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Le nom est obligatoire'],
+      required: [true, 'Name is required'],
       trim: true
     },
 
     email: {
       type: String,
-      required: [true, "L'email est obligatoire"],
+      required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
       match: [
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        'Format d’email invalide (ex: aya@polytechnique.tn)'
+        'Invalid email format'
       ]
     },
 
-    age: {
-      type: Number,
-      min: [4, "L'âge minimum autorisé est de 4 ans"]
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters long']
     },
 
     role: {
       type: String,
       enum: {
         values: ['user', 'admin'],
-        message: "{VALUE} n'est pas un rôle autorisé"
+        message: '{VALUE} is not a valid role'
       },
       default: 'user'
+    },
+
+    age: {
+      type: Number,
+      min: [4, 'Minimum allowed age is 4']
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
 
 module.exports = mongoose.model('User', userSchema);
